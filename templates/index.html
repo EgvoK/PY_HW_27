@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to Todo list {% endblock %}</h1>
+    {% for item in items %}
+        <a href="{{ url_for('item', item_id=item['id']) }}">
+            <h2>{{ item['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ item['created'] }}</span>
+        <a href="{{ url_for('edit', item_id=item['id']) }}">
+            <span class="badge badge-primary">Edit</span>
+        </a>
+        <hr/>
+    {% endfor %}
+{% endblock %}
