@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash, redirect, url_for
 import sqlite3
 from werkzeug.exceptions import abort
 
@@ -33,4 +33,21 @@ def index():
 
 @app.route('/<int:item_id>')
 def item(item_id):
-    pass
+    current_item = get_item(item_id)
+    return render_template('item.html', item=current_item)
+
+
+@app.route('/create', methods=('GET', 'POST'))
+def create():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        if not title:
+            flash('Title is required!')
+        else:
+            connection = get_db_connection()
+            connection.execute('insert into items (title, description) values (?, ?)', (title, description))
+            connection.commit()
+            connection.close()
+            return redirect(url_for('index'))
+    return render_template('create.html')
