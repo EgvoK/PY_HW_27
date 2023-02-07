@@ -8,6 +8,9 @@
         </a>
         <p></p>
         <span class="badge badge-primary">Added: {{ item['created'] }}</span>
+        <a href="{{ url_for('edit', item_id=item['id']) }}">
+            <span class="badge badge-primary">Edit</span>
+        </a>
         <hr/>
     {% endfor %}
 {% endblock %}

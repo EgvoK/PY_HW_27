@@ -51,3 +51,41 @@ def create():
             connection.close()
             return redirect(url_for('index'))
     return render_template('create.html')
+
+
+@app.route('/<int:item_id>/edit', methods=('GET', 'POST'))
+def edit(item_id):
+    current_item = get_item(item_id)
+
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+
+        if not title:
+            flash('Title is required!')
+        else:
+            connection = get_db_connection()
+            connection.execute('update items set title = ?, description = ? where id = ?',
+                               (title, description, item_id))
+            connection.commit()
+            connection.close()
+            return redirect(url_for('index'))
+    return render_template('edit.html', item=current_item)
+
+
+@app.route('/<int:item_id>/delete', methods=('POST',))
+def delete(item_id):
+    current_item = get_item(item_id)
+    connection = get_db_connection()
+    connection.execute('delete from items where id = ?', (item_id,))
+    connection.commit()
+    connection.close()
+    flash(f"{current_item['title']} was successfully deleted!")
+    return redirect(url_for('index'))
+
+
+if __name__ == '__main__':
+    app.run()
+
+
+
